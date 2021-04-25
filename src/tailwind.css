@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-size: 13px;
+    line-height: 20px;
+    color: #5b5b5b;
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin: 0px;
+    min-height: 100%;
+    /* background-color: #e22d2d */
+}
+
+.centerTable {
+    margin: 0 auto 0 auto;
+    display: table;
+
+
+}
