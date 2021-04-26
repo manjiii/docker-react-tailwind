@@ -3,26 +3,38 @@ const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const InterpolateHtmlPlugin = require('interpolate-html-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CopyFilePlugin = require("copy-webpack-plugin");
 
 module.exports = (env, argv) => {
 
     const build_dir = 'build';
     const static_dir = "static";
+    const dev_envfile = '.env';
+    const pro_envfile = '.env.pro';
 
     const isDevelopment = process.env.NODE_ENV !== 'production';
-    const envfile = isDevelopment ? '.env': '.env.pro'
-    const configfile = path.join(__dirname, envfile);
-    const d_env = dotenv.config({ path: configfile }).parsed;
+
+    const dev_configfile = path.join(__dirname, dev_envfile);
+    const app_env = dotenv.config({ path: dev_configfile }).parsed;
+
+    // overwrite pro setting if is not development
+    if (!isDevelopment) {
+
+        const pro_configfile = path.join(__dirname, pro_envfile);
+        const pro_env = dotenv.config({ path: pro_configfile }).parsed;
+        Object.assign(app_env, pro_env);
+    }
 
     return {
         watchOptions: {
             ignored: /node_modules/
         },
         mode: isDevelopment ? 'development' : 'production',
-        devtool:  isDevelopment ? 'inline-source-map' : false,
+        devtool: isDevelopment ? 'inline-source-map' : false,
         entry: './src/index.js',
         output: {
             path: path.join(__dirname, build_dir),
@@ -70,21 +82,36 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new webpack.DefinePlugin({
-                'process.env': JSON.stringify(d_env),
+                'process.env': JSON.stringify(app_env),
             }),
             new HtmlWebpackPlugin({
                 template: './public/index.html',
                 inject: 'body',
                 // hash: true,
             }),
+            new InterpolateHtmlPlugin(app_env),
             isDevelopment && new ReactRefreshWebpackPlugin(),
             new MiniCssExtractPlugin({
                 filename: static_dir + '/css/main-[contenthash].css'
             }),
+            new CopyFilePlugin({
+                patterns: [
+                    {
+                        context: "public",
+                        from: "**/*",
+                        to: path.resolve(__dirname, build_dir),
+                        globOptions: {
+                            dot: true,
+                            gitignore: true,
+                            ignore: ["**/index.html"],
+                        },
+                    }
+                ]}
+            ),
         ].filter(Boolean),
         optimization: {
             minimizer: [
-               `...`,
+                `...`,
                 new CssMinimizerPlugin(),
             ],
         },
