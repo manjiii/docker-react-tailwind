@@ -7,18 +7,12 @@
         {
             "type": "pwa-chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost react",
+            "name": "Launch Chrome against react",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
             "sourceMaps": true,
-            // "sourceMapPathOverrides": {
-            //     "webpack:///./*": "${webRoot}/src/*"
-            // },
-            //"userDataDir": "${workspaceRoot}/.vscode/chrome",
-            "smartStep": true,
-            "skipFiles": [
-                "node_modules/**"
-            ],
-        },
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "smartStep": true
+        }
     ]
 }
