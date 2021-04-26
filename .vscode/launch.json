@@ -16,7 +16,6 @@
             // },
             //"userDataDir": "${workspaceRoot}/.vscode/chrome",
             "smartStep": true,
-            "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [
                 "node_modules/**"
             ],
