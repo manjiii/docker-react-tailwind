@@ -79,6 +79,7 @@ module.exports = (env, argv) => {
             // before(app, server, compiler) {
             //     // console.log('before')
             // }
+            historyApiFallback: true,
         },
         plugins: [
             new webpack.DefinePlugin({
